@@ -68,12 +68,11 @@ const createTables = async () => {
     console.log('   12345678 - John Smith');
     console.log('   87654321 - Sarah Johnson');
     console.log('   11223344 - Raj Patel');
-    
-    process.exit(0);
   } catch (error) {
     console.error('❌ Error creating tables:', error);
-    process.exit(1);
+    throw error; // Let the caller handle the error
   }
 };
 
-createTables();
+// Export as a function so server.js can import and run it
+module.exports = createTables;
