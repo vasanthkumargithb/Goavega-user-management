@@ -9,6 +9,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Import the database initialization script
+const initDatabase = require('./scripts/initDatabase');
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -59,13 +62,21 @@ app.use('*', (req, res) => {
   });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log('🚀 ================================================');
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Open your browser: http://localhost:${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/api/health`);
-  console.log('🚀 ================================================');
-});
+// ✅ Initialize database, then start server
+initDatabase()
+  .then(() => {
+    console.log('✅ Database tables ensured.');
+    app.listen(PORT, () => {
+      console.log('🚀 ================================================');
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Open your browser: http://localhost:${PORT}`);
+      console.log(`Health check: http://localhost:${PORT}/api/health`);
+      console.log('🚀 ================================================');
+    });
+  })
+  .catch((err) => {
+    console.error('❌ Failed to initialize database:', err);
+    process.exit(1); // Stop server if DB init fails
+  });
 
 module.exports = app;
