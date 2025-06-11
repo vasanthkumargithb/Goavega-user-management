@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOAVEGA - User Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #ff6600 0%, #ff8533 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            font-size: 14px;
+        }
+
+        .content {
+            background: white;
+            border-radius: 0 0 10px 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group.small {
+            flex: 0 0 180px;
+            min-width: 180px;
+        }
+
+        .form-group.medium {
+            flex: 0 0 200px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            background: #f8f9fa;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #ff6600;
+            background: white;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-buttons {
+            display: flex;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .toggle-btn {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .toggle-btn.active {
+            background: #ff6600;
+            color: white;
+        }
+
+        .toggle-btn:hover {
+            background: #ff8533;
+            color: white;
+        }
+
+        .din-section {
+            display: flex;
+            gap: 15px;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+
+        .fetch-btn {
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+
+        .fetch-btn:hover {
+            background: #e55a00;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #ff6600;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #e55a00;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: #ff6600;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .login-content {
+            padding: 30px;
+        }
+
+        .login-method-selector {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .method-title {
+            color: #ff6600;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .method-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .method-btn {
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .method-btn:hover {
+            background: #e55a00;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .divider {
+            height: 2px;
+            background: #eee;
+            margin: 30px 0;
+        }
+
+        .navigation {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #ff6600;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: underline;
+            margin: 0 10px;
+        }
+
+        .nav-btn:hover {
+            color: #e55a00;
+        }
+
+        .otp-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .otp-info {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            margin-left: 15px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid white;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+
+            .form-group {
+                min-width: 100%;
+            }
+
+            .form-group.small {
+                min-width: 100%;
+            }
+
+            .din-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .toggle-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .toggle-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Method Selector -->
+        <div id="loginMethodSelector" class="login-method-selector">
+            <div style="padding: 30px;">
+                <h2 class="method-title">Choose Login Method</h2>
+                <div class="method-buttons">
+                    <button class="method-btn" onclick="showLogin('email')">Email & Password</button>
+                    <button class="method-btn" onclick="showLogin('phone')">Phone OTP</button>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="nav-btn" onclick="showSignup()">Don't have an account? Sign Up</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Login -->
+        <div id="emailLogin" class="login-container" style="display: none;">
+            <div class="login-header">
+                Login (Email & Password)
+            </div>
+            <div class="login-content">
+                <div id="emailLoginAlert"></div>
+                <form id="emailLoginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email:</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password:</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="nav-btn" onclick="showLoginSelector()">← Back to login options</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phone OTP Login -->
+        <div id="phoneLogin" class="login-container" style="display: none;">
+            <div class="login-header">
+                Login (Phone OTP)
+            </div>
+            <div class="login-content">
+                <div id="phoneLoginAlert"></div>
+                <form id="phoneLoginForm">
+                    <div class="form-group">
+                        <label for="loginPhone">Mobile Number:</label>
+                        <input type="text" id="loginPhone" placeholder="Enter your mobile number" required>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">Send OTP</button>
+                    </div>
+                </form>
+                
+                <div id="otpSection" style="display: none;">
+                    <div class="divider"></div>
+                    <div class="otp-info">OTP sent to your mobile number</div>
+                    <form id="otpVerifyForm">
+                        <div class="form-group">
+                            <label for="otpCode">Enter OTP:</label>
+                            <input type="text" id="otpCode" placeholder="Enter 6-digit OTP" maxlength="6" required>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-primary">Verify OTP</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="nav-btn" onclick="showLoginSelector()">← Back to login options</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div id="signupForm" class="login-container" style="display: none;">
+            <div class="login-header">
+                Sign Up
+            </div>
+            <div class="login-content">
+                <div id="signupAlert"></div>
+                <form id="signupFormElement">
+                    <div class="form-group">
+                        <label for="signupFullName">Full Name:</label>
+                        <input type="text" id="signupFullName" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email:</label>
+                        <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password:</label>
+                        <input type="password" id="signupPassword" placeholder="Enter your password (min 6 characters)" required>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    </div>
+                </form>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="nav-btn" onclick="showLoginSelector()">← Back to login options</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App (Add User Form) -->
+        <div id="mainApp" style="display: none;">
+            <div class="header">
+                <div class="logo">GOAVEGA<br><small style="font-size: 14px;">Software Pvt. Ltd</small></div>
+                <div class="user-info">
+                    Hello! <span id="userNameDisplay">Admin</span><br>
+                    <small>Administrator</small>
+                    <button onclick="logout()" class="logout-btn">Logout</button>
+                </div>
+            </div>
+            
+            <div class="content">
+                <div id="mainAlert"></div>
+                <h2 class="form-title">Add New User</h2>
+                
+                <form id="addUserForm">
+                    <!-- Board Member and Key Personnel toggles -->
+                    <div class="toggle-group">
+                        <div class="toggle-item">
+                            <label>Member of the Board of Directors?</label>
+                            <div class="toggle-buttons">
+                                <button type="button" class="toggle-btn" data-field="boardMember" data-value="true">Yes</button>
+                                <button type="button" class="toggle-btn active" data-field="boardMember" data-value="false">No</button>
+                            </div>
+                        </div>
+                        
+                        <div class="toggle-item">
+                            <label>Key Member Personnel?</label>
+                            <div class="toggle-buttons">
+                                <button type="button" class="toggle-btn" data-field="keyMember" data-value="true">Yes</button>
+                                <button type="button" class="toggle-btn active" data-field="keyMember" data-value="false">No</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Personal Details Section -->
+                    <h3 style="margin-bottom: 20px; color: #333;">Personal Details</h3>
+                    
+                    <!-- DIN Fetch Section -->
+                    <div class="din-section">
+                        <div class="form-group">
+                            <label for="dinNumber">Enter DIN No.</label>
+                            <input type="text" id="dinNumber" placeholder="Enter 8-digit DIN" maxlength="8">
+                        </div>
+                        <button type="button" class="fetch-btn" onclick="fetchDINDetails()">FETCH</button>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="designation">Designation</label>
+                            <input type="text" id="designation" placeholder="Enter designation">
+                        </div>
+                        
+                        <div class="form-group small">
+                            <label>Gender</label>
+                            <div class="toggle-buttons">
+                                <button type="button" class="toggle-btn" data-field="gender" data-value="Male">Male</button>
+                                <button type="button" class="toggle-btn" data-field="gender" data-value="Female">Female</button>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" placeholder="Enter full name" required>
+                        </div>
+                        
+                        <div class="form-group medium">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" placeholder="Enter age" min="18" max="100">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nationality">Nationality</label>
+                            <input type="text" id="nationality" placeholder="Enter nationality" value="Indian">
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Communication Details Section -->
+                    <h3 style="margin-bottom: 20px; color: #333;">Communication Details</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="primaryEmail">Primary Email ID (Used to login)</label>
+                            <input type="email" id="primaryEmail" placeholder="Enter email address" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mobileNumber">Mobile No. (Used to Login)</label>
+                            <input type="text" id="mobileNumber" placeholder="Enter mobile number" required>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">Add User</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        let currentUser = null;
+        let formData = {
+            boardMember: false,
+            keyMember: false,
+            gender: 'Prefer Not to say'
+        };
+
+        // Navigation functions
+        function showLoginSelector() {
+            hideAll();
+            document.getElementById('loginMethodSelector').style.display = 'block';
+        }
+
+        function showLogin(type) {
+            hideAll();
+            if (type === 'email') {
+                document.getElementById('emailLogin').style.display = 'block';
+            } else {
+                document.getElementById('phoneLogin').style.display = 'block';
+            }
+        }
+
+        function showSignup() {
+            hideAll();
+            document.getElementById('signupForm').style.display = 'block';
+        }
+
+        function showMainApp() {
+            hideAll();
+            document.getElementById('mainApp').style.display = 'block';
+        }
+
+        function hideAll() {
+            document.getElementById('loginMethodSelector').style.display = 'none';
+            document.getElementById('emailLogin').style.display = 'none';
+            document.getElementById('phoneLogin').style.display = 'none';
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'none';
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            showLoginSelector();
+        }
+
+        // Toggle button functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('toggle-btn')) {
+                const field = e.target.getAttribute('data-field');
+                const value = e.target.getAttribute('data-value');
+                const container = e.target.parentNode;
+                
+                // Remove active class from siblings
+                container.querySelectorAll('.toggle-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                e.target.classList.add('active');
+                
+                // Update form data
+                if (field === 'boardMember' || field === 'keyMember') {
+                    formData[field] = value === 'true';
+                } else {
+                    formData[field] = value;
+                }
+            }
+        });
+
+        // Utility functions
+        function showAlert(elementId, message, type) {
+            const alertElement = document.getElementById(elementId);
+            alertElement.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                alertElement.innerHTML = '';
+            }, 5000);
+        }
+
+        function setLoading(formId, loading) {
+            const form = document.getElementById(formId);
+            if (loading) {
+                form.classList.add('loading');
+            } else {
+                form.classList.remove('loading');
+            }
+        }
+
+        // Sign Up functionality
+        document.getElementById('signupFormElement').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            setLoading('signupFormElement', true);
+
+            const signupData = {
+                full_name: document.getElementById('signupFullName').value,
+                email: document.getElementById('signupEmail').value,
+                password: document.getElementById('signupPassword').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(signupData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('signupAlert', 'Account created successfully! You can now login.', 'success');
+                    setTimeout(() => {
+                        showLoginSelector();
+                    }, 2000);
+                } else {
+                    showAlert('signupAlert', data.message || 'Signup failed', 'error');
+                }
+            } catch (error) {
+                showAlert('signupAlert', 'Network error. Please check if the server is running.', 'error');
+                console.error('Signup error:', error);
+            } finally {
+                setLoading('signupFormElement', false);
+            }
+        });
+
+        // Email Login functionality
+        document.getElementById('emailLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            setLoading('emailLoginForm', true);
+
+            const loginData = {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentUser = data.data.user;
+                    localStorage.setItem('authToken', data.data.token);
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    document.getElementById('userNameDisplay').textContent = currentUser.full_name;
+                    showAlert('emailLoginAlert', 'Login successful!', 'success');
+                    setTimeout(() => {
+                        showMainApp();
+                    }, 1000);
+                } else {
+                    showAlert('emailLoginAlert', data.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showAlert('emailLoginAlert', 'Network error. Please check if the server is running.', 'error');
+                console.error('Login error:', error);
+            } finally {
+                setLoading('emailLoginForm', false);
+            }
+        });
+
+        // Phone Login functionality
+        document.getElementById('phoneLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            setLoading('phoneLoginForm', true);
+
+            const mobileNo = document.getElementById('loginPhone').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/send-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mobile_no: mobileNo })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('otpSection').style.display = 'block';
+                    showAlert('phoneLoginAlert', `OTP sent successfully! Demo OTP: ${data.data.demo_otp}`, 'success');
+                } else {
+                    showAlert('phoneLoginAlert', data.message || 'Failed to send OTP', 'error');
+                }
+            } catch (error) {
+                showAlert('phoneLoginAlert', 'Network error. Please check if the server is running.', 'error');
+                console.error('OTP error:', error);
+            } finally {
+                setLoading('phoneLoginForm', false);
+            }
+        });
+
+        // OTP Verification
+        document.getElementById('otpVerifyForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            setLoading('otpVerifyForm', true);
+
+            const verifyData = {
+                mobile_no: document.getElementById('loginPhone').value,
+                otp: document.getElementById('otpCode').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/verify-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(verifyData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentUser = data.data.user;
+                    localStorage.setItem('authToken', data.data.token);
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    document.getElementById('userNameDisplay').textContent = currentUser.full_name;
+                    showAlert('phoneLoginAlert', 'OTP verified successfully!', 'success');
+                    setTimeout(() => {
+                        showMainApp();
+                    }, 1000);
+                } else {
+                    showAlert('phoneLoginAlert', data.message || 'OTP verification failed', 'error');
+                }
+            } catch (error) {
+                showAlert('phoneLoginAlert', 'Network error. Please check if the server is running.', 'error');
+                console.error('OTP verification error:', error);
+            } finally {
+                setLoading('otpVerifyForm', false);
+            }
+        });
+
+        // DIN Fetch functionality
+        async function fetchDINDetails() {
+            const dinNumber = document.getElementById('dinNumber').value;
+            
+            if (!dinNumber || dinNumber.length !== 8) {
+                showAlert('mainAlert', 'Please enter a valid 8-digit DIN number', 'error');
+                return;
+            }
+
+            const fetchBtn = document.querySelector('.fetch-btn');
+            fetchBtn.textContent = 'FETCHING...';
+            fetchBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE}/din/lookup/${dinNumber}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    // Populate form with fetched data
+                    document.getElementById('fullName').value = data.data.full_name;
+                    document.getElementById('designation').value = data.data.designation || '';
+                    document.getElementById('nationality').value = data.data.nationality || 'Indian';
+                    document.getElementById('age').value = data.data.age || '';
+                    
+                    // Set gender toggle
+                    if (data.data.gender) {
+                        const genderBtns = document.querySelectorAll('[data-field="gender"]');
+                        genderBtns.forEach(btn => {
+                            btn.classList.remove('active');
+                            if (btn.getAttribute('data-value') === data.data.gender) {
+                                btn.classList.add('active');
+                                formData.gender = data.data.gender;
+                            }
+                        });
+                    }
+
+                    showAlert('mainAlert', 'DIN details fetched successfully!', 'success');
+                } else {
+                    showAlert('mainAlert', data.message || 'DIN not found', 'error');
+                }
+            } catch (error) {
+                showAlert('mainAlert', 'Error fetching DIN details. Please check if the server is running.', 'error');
+                console.error('DIN fetch error:', error);
+            } finally {
+                fetchBtn.textContent = 'FETCH';
+                fetchBtn.disabled = false;
+            }
+        }
+
+        // Add User functionality
+        document.getElementById('addUserForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            setLoading('addUserForm', true);
+
+            const userData = {
+                full_name: document.getElementById('fullName').value,
+                email: document.getElementById('primaryEmail').value,
+                mobile_no: document.getElementById('mobileNumber').value,
+                din_number: document.getElementById('dinNumber').value || null,
+                age: parseInt(document.getElementById('age').value) || null,
+                gender: formData.gender,
+                designation: document.getElementById('designation').value || null,
+                nationality: document.getElementById('nationality').value || null,
+                is_board_member: formData.boardMember,
+                is_key_member: formData.keyMember
+            };
+
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE}/users/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    let message = 'User created successfully!';
+                    if (data.data.demo_password) {
+                        message += ` Login credentials - Email: ${userData.email}, Password: ${data.data.demo_password}`;
+                    } else {
+                        message += ' Login credentials sent to email.';
+                    }
+                    showAlert('mainAlert', message, 'success');
+                    resetForm();
+                } else {
+                    showAlert('mainAlert', data.message || 'Failed to create user', 'error');
+                }
+            } catch (error) {
+                showAlert('mainAlert', 'Network error. Please check if the server is running.', 'error');
+                console.error('User creation error:', error);
+            } finally {
+                setLoading('addUserForm', false);
+            }
+        });
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('addUserForm').reset();
+            document.getElementById('nationality').value = 'Indian';
+            
+            // Reset toggles to default
+            formData = {
+                boardMember: false,
+                keyMember: false,
+                gender: 'Prefer Not to say'
+            };
+            
+            // Reset toggle buttons visually
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.querySelectorAll('[data-field="boardMember"][data-value="false"]').forEach(btn => btn.classList.add('active'));
+            document.querySelectorAll('[data-field="keyMember"][data-value="false"]').forEach(btn => btn.classList.add('active'));
+            document.querySelectorAll('[data-field="gender"][data-value="Prefer Not to say"]').forEach(btn => btn.classList.add('active'));
+        }
+
+        // Check for existing login on page load
+        window.addEventListener('load', function() {
+            const token = localStorage.getItem('authToken');
+            const savedUser = localStorage.getItem('currentUser');
+            
+            if (token && savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    document.getElementById('userNameDisplay').textContent = currentUser.full_name;
+                    showMainApp();
+                } catch (error) {
+                    console.error('Error parsing saved user:', error);
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('currentUser');
+                    showLoginSelector();
+                }
+            } else {
+                showLoginSelector();
+            }
+        });
+
+        // Add some helpful console messages
+        console.log('🚀 GOAVEGA User Management System');
+        console.log('📋 Sample DIN numbers for testing:');
+        console.log('   12345678 - John Smith');
+        console.log('   87654321 - Sarah Johnson');
+        console.log('   11223344 - Raj Patel');
+        console.log('   44332211 - Priya Sharma');
+        console.log('   55667788 - Michael Brown');
+    </script>
+</body>
+</html>
